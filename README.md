@@ -10,13 +10,13 @@ npm i rockset
 
 Supports ES6 promises and Typescript out of the box.
 
-If you are looking for the old Javascript SDK, you can find it at branch [v1](https://github.com/rockset/rockset-node-client/tree/v1)
-
 ## Requirements
 
 At least Node v4.3.2
+
 If you are using Webpack, you should have ES6 support.
-You must use Typescript to get types support.
+
+Optionally use Typescript for type checking.
 
 ## Documentation
 
@@ -98,9 +98,9 @@ rockset.queryLambdas
 
 By default, the rockset-node-client is a thin wrapper that sends REST calls to Rockset using `node-fetch`. Many applications may require more complex behavior. If additional functionality is required, `rockset-node-client` can be configured to generate the parameters for a REST call, and pass them to a custom fetch function to be handled accordingly.
 
-Here is an example that shows how to support cancelling api calls using a custom fetch function with Axios. To supply a custom fetch function, we pass it in as the last parameter to rocksetConfigure.
+Here is an example that shows how to support cancelling API calls using a custom fetch function with Axios. To supply a custom fetch function, we pass it in as the last parameter to rocksetConfigure.
 
-_Note this does not cancel the api request on Rockset's servers_
+_Note this does not cancel the API request on Rockset's servers_
 
 ```ts
 import axios from "axios";
@@ -148,7 +148,7 @@ You can see a few more [sample examples](examples) of how to create a collection
 
 ## Testing
 
-Unit tests are available in the [Test](test) folder.
+Unit tests are available in the [tests](tests) folder.
 
 Set ROCKSET_APIKEY and ROCKSET_HOST endpoint in the environment variables. To run tests:
 
@@ -160,7 +160,7 @@ This runs unit tests and integration tests.
 
 ## How to contribute
 
-Please feel free to submit a pull request for any changes you’d like. Make sure all changes include updated tests. Pull requests will be reviewed by the Rockset team
+Please feel free to submit a pull request for modifications that can benefit other users in the community. It is best to have a unit test associated with each pull request.
 
 ## Support
 
