@@ -1,5 +1,9 @@
 # Rockset Node Client Changelog
 
+## v3.3.0 2020-05-19
+
+- Update version types for Query Lambdas
+
 ## v3.2.1 2020-04-17
 
 - Add support for MongoDB sources and integrations

@@ -1,5 +1,6 @@
 import rocksetConfigure from "../src/index";
 import axios from "axios";
+import { QueryLambdaVersionResponse } from "../src/codegen/api";
 
 const basePath = process.env.ROCKSET_HOST || "https://api.rs2.usw2.rockset.com";
 const apikey = process.env.ROCKSET_APIKEY as string;
@@ -28,7 +29,7 @@ const collection =
     .toString(36)
     .slice(2);
 
-const savedQuery =
+const queryLambdaName =
   "test_query_" +
   Math.random()
     .toString(36)
@@ -70,7 +71,7 @@ describe("Rockset Unit Tests", function() {
       collections: ["commons._events"],
       column_fields: [{ name: "?count", type: "" }],
       results: [{ "?count": expect.anything() }],
-      stats: { rows_scanned: 0 }
+      stats: { elapsed_time_ms: expect.anything() }
     });
   });
 
@@ -99,10 +100,11 @@ describe("Rockset Unit Tests", function() {
     }
   });
 
+  let queryLambda: QueryLambdaVersionResponse;
   test("creating a Query Lambda", async () => {
     try {
-      const result = await rockset.queryLambdas.createQueryLambda("commons", {
-        name: savedQuery,
+      queryLambda = await rockset.queryLambdas.createQueryLambda("commons", {
+        name: queryLambdaName,
         sql: {
           query: 'SELECT :param as echo',
           default_parameters: [{
@@ -112,13 +114,13 @@ describe("Rockset Unit Tests", function() {
           }],
         },
       });
-      expect(result).toMatchObject({
+      expect(queryLambda).toMatchObject({
         data: {
           created_at: expect.anything(),
           created_by: expect.anything(),
-          name: savedQuery,
+          name: queryLambdaName,
           workspace: "commons",
-          version: 1,
+          version: expect.anything(),
           description: null,
           sql: { 
             query: 'SELECT :param as echo',
@@ -139,7 +141,7 @@ describe("Rockset Unit Tests", function() {
 
   test("running a Query Lambda with default parameters", async () => {
     try {
-      const result = await rockset.queryLambdas.executeQueryLambda("commons", savedQuery, 1);
+      const result = await rockset.queryLambdas.executeQueryLambda("commons", queryLambda?.data?.name ?? '', queryLambda?.data?.version ?? '');
       expect(result).toMatchObject({
         results: [{
           "echo": "Hello world!",
@@ -153,7 +155,7 @@ describe("Rockset Unit Tests", function() {
 
   test("running a Query Lambda with custom parameters", async () => {
     try {
-      const result = await rockset.queryLambdas.executeQueryLambda("commons", savedQuery, 1, {
+      const result = await rockset.queryLambdas.executeQueryLambda("commons", queryLambda?.data?.name ?? '', queryLambda?.data?.version ?? '', {
         parameters: [{
           name: 'param',
           type: 'string',
@@ -173,25 +175,13 @@ describe("Rockset Unit Tests", function() {
 
   test("deleting a Query Lambda", async () => {
     try {
-      const result = await rockset.queryLambdas.deleteQueryLambda("commons", savedQuery);
+      const result = await rockset.queryLambdas.deleteQueryLambda("commons", queryLambdaName);
       expect(result).toMatchObject({
         data: {
-          created_at: expect.anything(),
-          created_by: expect.anything(),
-          name: savedQuery,
+          last_updated: expect.anything(),
+          last_updated_by: expect.anything(),
+          name: queryLambdaName,
           workspace: "commons",
-          version: 1,
-          description: null,
-          sql: {
-            query: 'SELECT :param as echo',
-            default_parameters: [{
-              name: 'param',
-              type: 'string',
-              value: 'Hello world!'
-            }],
-          },
-          stats: expect.anything(),
-          collections: [],
         }
       });
     } catch (e) {
