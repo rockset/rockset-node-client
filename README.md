@@ -20,13 +20,13 @@ Optionally use Typescript for type checking.
 
 ## Documentation
 
-Further documentation of the Javascript SDK can be found in the [Rockset Docs](https://docs.rockset.com/nodejs/).
+Full API Reference of the Javascript SDK can be found in the [Rockset Docs](https://docs.rockset.com/nodejs/).
 
 ## Usage
 
 ### Import Using Require
 
-```js
+```ts
 const rockset = require("rockset").default(
   apikey,
   "https://api.rs2.usw2.rockset.com"
@@ -48,13 +48,102 @@ await rockset.queries.query({
 });
 ```
 
-### Query Lambdas
+### Create a Collection
+
+Create a collection using the `client` object as follows:
 
 ```ts
-// Create a Query Lambda
-rockset.queryLambdas
+client.collections
+  .createCollection("commons", {
+    name: "my-first-collection",
+    description: "my first collection",
+  })
+  .then(console.log);
+```
+
+### Create an Integration
+
+If you have an Amazon S3 bucket that you want to ingest data from, create a Rockset Integration to store credentials required to access the bucket.
+Create an integration object using the `client` object as follows:
+
+```ts
+client.integrations
+  .createIntegration({
+    name: "my-first-integration",
+    description: "my-first-integration",
+    s3: {
+      aws_role: {
+        aws_role_arn: "...",
+      },
+      aws_access_key: {
+        aws_access_key_id: "...",
+        aws_secret_access_key: "...",
+      },
+    },
+  })
+  .then(console.log);
+```
+
+### Create a Collection from Amazon S3
+
+Prior to creating a collection using Amazon S3 as source, create a Rockset Integration first as described above.
+
+```ts
+client.collections
+  .createCollection("commons", {
+    name: "my-first-s3-collection",
+    description: "my first s3 collection",
+    sources: [
+      {
+        integration_name: "my-first-integration",
+        s3: {
+          bucket: "bucket-name",
+        },
+      },
+    ],
+  })
+  .then(console.log);
+```
+
+### Add Documents
+
+Add documents to an existing collection using the `client` object.
+
+```ts
+client.documents
+  .addDocuments("commons", "my-first-collection", {
+    data: [
+      {
+        name: "foo",
+        address: "bar",
+      },
+    ],
+  })
+  .then(console.log);
+```
+
+### Query
+
+Make queries to Rockset using the `client` object.
+
+```ts
+client.queries
+  .query({
+    sql: {
+      query: "Select count(*) from _events;",
+    },
+  })
+  .then(console.log);
+```
+
+### Create a Query Lambda
+
+Create a Query Lambda using the `client` object.
+
+```ts
+client.queryLambdas
   .createQueryLambda("commons", {
-    name: "myQuery",
+    name: "myQueryLambda",
     sql: {
       query: "SELECT :param as echo",
       default_parameters: [
@@ -66,27 +155,32 @@ rockset.queryLambdas
       ],
     },
   })
-  .then(console.log)
-  .catch(console.error);
+  .then(console.log);
+```
 
-// Execute a Query Lambda with default parameters (or no parameters)
-rockset.queryLambdas
+### Execute a Query Lambda
+
+Execute a Query Lambda using the `client` object.
+
+```ts
+// Run a Query Lambda with default parameters (or no parameters)
+client.queryLambdas
   .executeQueryLambda(
     /* workspace */ "commons",
     /* queryName */ "myQuery",
-    /* version */ 1
+    /* version */ "1ab853df3eab33b"
   )
   .then(console.log)
   .catch(console.error);
 
-// Execute a Query Lambda with, and specify parameters
-rockset.queryLambdas
-  .executeQueryLambda("commons", "myQuery", 1, {
+// Run a Query Lambda with custom parameters
+client.queryLambdas
+  .executeQueryLambda("commons", "myQuery", "1ab853df3eab33b", {
     parameters: [
       {
         name: "param",
-        value: "All work and no play makes Jack a dull boy",
         type: "string",
+        value: "All work and no play makes Jack a dull boy",
       },
     ],
   })

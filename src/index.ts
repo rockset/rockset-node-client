@@ -1,6 +1,18 @@
 import * as api from "./codegen/api";
 require("node-fetch");
 
+export interface MasterApi {
+  users: api.UsersApi;
+  apikeys: api.ApiKeysApi;
+  workspaces: api.WorkspacesApi;
+  collections: api.CollectionsApi;
+  documents: api.DocumentsApi;
+  integrations: api.IntegrationsApi;
+  orgs: api.OrganizationsApi;
+  queries: api.QueriesApi;
+  queryLambdas: api.QueryLambdasApi;
+}
+
 /**
  * Returns a master object for all rockset apis
  *
@@ -11,7 +23,7 @@ const rocksetConfigure = (
   apikey: string,
   host: string,
   customFetch?: (url: string, request: any) => Promise<any>
-) => {
+): MasterApi => {
   // Overwrite the apikey so it doesn't need to be specified on every query
   const authFetch = async (url: string, options: any) => {
     const newOptions = {
