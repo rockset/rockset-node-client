@@ -18,9 +18,10 @@
     "@types/jest": "^24.0.23",
     "axios": "^0.19.1",
     "jest": "^24.9.0",
-    "ts-jest": "^24.1.0",
     "jest-cli": "^24.9.0",
-    "typescript": "^3.7.2"
+    "ts-jest": "^24.1.0",
+    "typedoc": "^0.17.7",
+    "typescript": "^3.9.5"
   },
   "repository": {
     "type": "git",
@@ -30,7 +31,8 @@
     "test": "jest",
     "build": "tsc && cp src/codegen/custom.d.ts dist/codegen/custom.d.ts",
     "clean": "rm -r dist",
-    "prepublishOnly": "npm run clean && npm run build && npm run test"
+    "prepublishOnly": "npm run clean && npm run build && npm run test",
+    "docs": "rm -rf docs && typedoc"
   },
   "author": "Rockset Inc <api@rockset.com>",
   "keywords": [

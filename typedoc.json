@@ -1,0 +1,7 @@
+
+{
+  "inputFiles": ["./src/index.ts"],
+  "mode": "modules",
+  "out": "docs/",
+  "ignoreCompilerErrors": true
+}
