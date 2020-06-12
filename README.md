@@ -33,7 +33,7 @@ const rockset = require("rockset").default(
 );
 
 await rockset.queries.query({
-  sql: { query: "Select count(*) from _events" },
+  sql: { query: "SELECT count(*) FROM _events" },
 });
 ```
 
@@ -44,7 +44,7 @@ import rocksetConfigure from "rockset";
 const rockset = rocksetConfigure(apikey, "https://api.rs2.usw2.rockset.com");
 
 await rockset.queries.query({
-  sql: { query: "Select count(*) from _events" },
+  sql: { query: "SELECT count(*) FROM _events" },
 });
 ```
 
@@ -130,7 +130,7 @@ Make queries to Rockset using the `client` object.
 client.queries
   .query({
     sql: {
-      query: "Select count(*) from _events;",
+      query: "SELECT count(*) FROM _events;",
     },
   })
   .then(console.log);
@@ -227,7 +227,7 @@ const cancelSource = axios.CancelToken.source();
 // To execute a query
 rockset.queries
   .query(
-    { sql: { query: "Select count(*) from _events" } },
+    { sql: { query: "SELECT count(*) FROM _events" } },
     { cancelToken: cancelSource.token }
   )
   .then(console.log)
