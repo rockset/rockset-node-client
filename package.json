@@ -31,8 +31,8 @@
     "test": "jest",
     "build": "tsc && cp src/codegen/custom.d.ts dist/codegen/custom.d.ts",
     "clean": "rm -r dist",
-    "prepublishOnly": "npm run clean && npm run build && npm run test",
-    "docs": "rm -rf docs && typedoc"
+    "docs": "rm -rf docs && typedoc --out docs/ --ignoreCompilerErrors  src/index.ts --mode modules",
+    "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "author": "Rockset Inc <api@rockset.com>",
   "keywords": [
